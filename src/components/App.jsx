@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import css from './App.module.css';
+
+import Section from './Section/Section';
 import FeedbackOptions from './Feedback/Feedbackoptions';
 
 class App extends Component {
@@ -8,46 +11,34 @@ class App extends Component {
     bad: 0,
   };
 
-  onLeaveFeedback = e => {
-    const currentBtnValue = e.currentTarget.value;
+  onLeaveFeedback = state => {
     this.setState(prevState => ({
-      ...prevState,
-      [currentBtnValue]: prevState[currentBtnValue] + 1,
+      [state]: prevState[state] + 1,
     }));
   };
 
-  countTotalFeedback = () => {
-    const valuesArr = Object.values(this.state);
-    return valuesArr.reduce((acc, val) => {
-      acc += val;
-      return acc;
-    });
-  };
-  countZero = () => {
-    if (
-      this.state.good === 0 &&
-      this.state.neutral === 0 &&
-      this.state.bad === 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-  countPositiveFeedbackPercentage = () => {
-    return Math.trunc((this.state.good / this.countTotalFeedback()) * 100);
-  };
+  countTotalFeedback() {
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
+  }
+
+  countPositiveFeedbackPercentage() {
+    const { good } = this.state;
+    return Math.round((good / this.countTotalFeedback()) * 100);
+  }
 
   render() {
-    const btnNames = Object.keys(this.state);
+    const { good, neutral, bad } = this.state;
+    const options = Object.keys(this.state);
+
     return (
-      <div className="App">
-        <section>
+      <div className={css.container}>
+        <Section title="Please leave feedback">
           <FeedbackOptions
-            options={btnNames}
+            options={options}
             onLeaveFeedback={this.onLeaveFeedback}
           />
-        </section>
+        </Section>
       </div>
     );
   }
